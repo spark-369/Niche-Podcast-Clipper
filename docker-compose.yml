@@ -1,0 +1,95 @@
+services:
+  api:
+    build: ./backend
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      ENABLE_DOCS: "false"
+      # Bound the numeric libraries (torch/OpenCV/NumPy) per process so the API
+      # workers and the Celery pool don't each grab every core and thrash to a
+      # deadlock. 0 = auto (physical cores); set explicitly on hosts with many
+      # cores to leave headroom for the worker service.
+      AI_NUM_THREADS: "${AI_NUM_THREADS:-0}"
+      # Inside the compose network the sibling services are reachable by name,
+      # not by the localhost defaults in backend/.env — override them here so a
+      # developer .env cannot accidentally point the containers at the host.
+      DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/podcast_clipper"
+      REDIS_URL: "redis://redis:6379/0"
+      CELERY_BROKER_URL: "redis://redis:6379/1"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/2"
+    ports:
+      - "8000:8000"
+    volumes:
+      - media_storage:/app/media_storage
+      - models:/app/models
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    build: ./backend
+    restart: unless-stopped
+    # CPU-only inference: every worker process loads its own copy of Whisper and
+    # Flan-T5, so a high concurrency multiplies RAM rather than throughput. Keep
+    # it low by default and raise CELERY_CONCURRENCY on hosts with headroom.
+    command:
+      ["celery", "-A", "worker.celery_app", "worker", "--loglevel=info",
+       "--concurrency=${CELERY_CONCURRENCY:-2}"]
+    env_file: ./backend/.env
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      # The worker pool runs the heavyweight Whisper/Flan-T5/OpenCV work, so give
+      # each worker process a capped share of the cores rather than the whole
+      # machine. Leave 0 to auto-size to physical cores (still one copy per
+      # worker process).
+      AI_NUM_THREADS: "${AI_NUM_THREADS:-0}"
+      DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/podcast_clipper"
+      REDIS_URL: "redis://redis:6379/0"
+      CELERY_BROKER_URL: "redis://redis:6379/1"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/2"
+    volumes:
+      - media_storage:/app/media_storage
+      - models:/app/models
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: podcast_clipper
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d podcast_clipper"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
+  media_storage:
+  models:

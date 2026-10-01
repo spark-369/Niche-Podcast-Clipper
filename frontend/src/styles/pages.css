@@ -1,0 +1,721 @@
+/* --------------------------------------------------------------------------- */
+/* Page-specific styles for the Niche Podcast Clipper (raw vanilla CSS)        */
+/* --------------------------------------------------------------------------- */
+
+/* --- Hero (HomePage) -------------------------------------------------------- */
+
+.hero-block {
+  position: relative;
+  padding: 56px 0 8px;
+}
+
+/* Aurora glow orbs behind the headline. */
+.hero-block::before,
+.hero-block::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+.hero-block::before {
+  width: 480px;
+  height: 380px;
+  top: -140px;
+  left: -120px;
+  background: #8b5cf62e;
+}
+
+.hero-block::after {
+  width: 420px;
+  height: 340px;
+  top: -80px;
+  right: -80px;
+  background: #ec489924;
+}
+
+.hero-block h1 {
+  font-size: clamp(2.3rem, 5vw, 3.6rem);
+  max-width: 820px;
+  line-height: 1.08;
+  background: linear-gradient(180deg, #ffffff 30%, #b9a8ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--text);
+}
+
+.hero-block__sub {
+  font-size: 1.08rem;
+  max-width: 620px;
+  color: var(--text-muted);
+}
+
+/* --- Page entrance ---------------------------------------------------------- */
+
+/* Children of `.page` rise into place with a light stagger on every navigation.
+   The global `prefers-reduced-motion` guard in base.css disables this. */
+.page > * {
+  animation: npc-rise 0.5s var(--ease) backwards;
+}
+
+.page > *:nth-child(2) { animation-delay: 60ms; }
+.page > *:nth-child(3) { animation-delay: 120ms; }
+.page > *:nth-child(4) { animation-delay: 180ms; }
+.page > *:nth-child(n + 5) { animation-delay: 220ms; }
+
+/* --- Auth pages ------------------------------------------------------------- */
+
+.auth-card {
+  position: relative;
+  max-width: 440px;
+  margin: 7vh auto 0;
+  padding: 34px 32px;
+  background: linear-gradient(170deg, var(--surface) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  animation: npc-rise 0.5s var(--ease) backwards;
+}
+
+/* Gradient hairline along the top edge. */
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--pink), transparent);
+  opacity: 0.85;
+}
+
+.auth-card__glyph {
+  font-size: 2rem;
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--grad-brand-soft);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 10px 26px -12px var(--accent-glow);
+  margin-bottom: 14px;
+}
+
+.auth-card p {
+  color: var(--text-muted);
+  margin: 0 0 18px;
+}
+
+.auth-card .stack {
+  margin-top: 8px;
+}
+
+/* --- Dashboard -------------------------------------------------------------- */
+
+.episode-card__title {
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--text);
+  display: block;
+}
+
+.episode-card__title:hover {
+  color: var(--accent-strong);
+}
+
+/* --- Upload panel ----------------------------------------------------------- */
+
+.upload-panel__dropzone {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: 34px 18px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color var(--speed) ease,
+    background var(--speed) ease,
+    box-shadow var(--speed) ease;
+  background: var(--bg-elevated);
+}
+
+.upload-panel__dropzone:hover,
+.upload-panel__dropzone--active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 4px var(--accent-soft), 0 0 34px -14px var(--accent-glow);
+}
+
+.upload-panel__file-icon {
+  font-size: 1.8rem;
+  display: inline-block;
+  transition: transform var(--speed) var(--ease);
+}
+
+.upload-panel__dropzone:hover .upload-panel__file-icon,
+.upload-panel__dropzone--active .upload-panel__file-icon {
+  transform: translateY(-3px) scale(1.08);
+}
+
+/* --- Episode detail --------------------------------------------------------- */
+
+.episode-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(300px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1000px) {
+  .episode-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.episode-player {
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: #000;
+  display: block;
+}
+
+/* --- Transcript viewer ------------------------------------------------------ */
+
+.transcript-viewer {
+  max-height: 420px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  padding: 6px;
+}
+
+.transcript-viewer__search { max-width: 260px; }
+
+.transcript-segment {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.transcript-segment:hover {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.transcript-segment__time {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  padding-top: 3px;
+}
+
+.transcript-segment:hover .transcript-segment__time { color: var(--accent-strong); }
+
+.transcript-segment__text { font-size: 0.9rem; line-height: 1.5; }
+
+/* --- Clip cards ------------------------------------------------------------- */
+
+.clip-card__preview {
+  position: relative;
+  display: block;
+  aspect-ratio: 9 / 16;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0e1120;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.clip-card__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s var(--ease);
+}
+
+/* Gentle zoom while hovering the card — the classic "video thumbnail" cue. */
+.card:hover .clip-card__preview img,
+.clip-card__preview:hover img {
+  transform: scale(1.045);
+}
+
+/* Soft scrim so overlaid chips stay legible on bright frames. */
+.clip-card__preview::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 62%, rgba(8, 10, 20, 0.55) 100%);
+  opacity: 0;
+  transition: opacity var(--speed) ease;
+  pointer-events: none;
+}
+
+.clip-card__preview:hover::after { opacity: 1; }
+
+.clip-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--text-dim);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: linear-gradient(150deg, var(--surface-2), #0e1120 70%);
+}
+
+.clip-card__score {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(11, 13, 23, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  box-shadow: 0 0 14px -4px var(--accent-glow);
+}
+
+.clip-card__duration {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(11, 13, 23, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+}
+
+.clip-card__title {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.clip-card__title:hover { color: var(--accent-strong); }
+
+/* --- Clip detail ------------------------------------------------------------ */
+
+.clip-detail {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  grid-auto-rows: min-content;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .clip-detail { grid-template-columns: 1fr; }
+}
+
+/* --- Phone frame (detail + editor preview) ---------------------------------- */
+
+.phone-frame {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  border-radius: 26px;
+  border: 1px solid var(--border-strong);
+  background: #0e1120;
+  overflow: hidden;
+  box-shadow:
+    0 30px 70px -30px rgba(0, 0, 0, 0.9),
+    0 0 0 6px rgba(255, 255, 255, 0.025),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  max-width: 320px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* On short viewports the frame must fit the available height instead of
+   overflowing below the fold. */
+@supports (height: 1dvh) {
+  @media (max-height: 820px) {
+    .phone-frame {
+      max-width: min(320px, calc((100dvh - 220px) * 9 / 16));
+    }
+  }
+}
+
+.phone-frame__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* While a save renders in the background the media stays on screen — it is the
+   clip the user is updating — but blurred and dimmed so it reads as a working
+   state and the progress overlay stays legible. */
+.phone-frame__canvas--busy > .phone-frame__media,
+.phone-frame__canvas--busy > .phone-frame__draft-frame {
+  filter: blur(14px) brightness(0.55) saturate(0.85);
+  transition: filter 0.35s ease;
+}
+
+/* Also grey out the transport controls so the blurred preview cannot be driven
+   while the worker owns the file. */
+.phone-frame__canvas--busy > .phone-frame__media {
+  pointer-events: none;
+}
+
+/* Letterbox media: the clip keeps its original aspect ratio (it is rendered at
+   source geometry), so `contain` shows it exactly without cropping. */
+.phone-frame__media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: #000;
+}
+
+/* Fullscreen playback fills the screen with black bars as needed.
+   The editor promotes the *container* so the caption canvas travels with the
+   video — promoting the bare <video> left the canvas behind, and fullscreen
+   playback showed no captions. This rule stays for the detail page, which still
+   fullscreens the video element directly. */
+.phone-frame__media:fullscreen {
+  border-radius: 0;
+  border: none;
+  width: 100vw;
+  height: 100vh;
+  max-height: none;
+  background: #000;
+}
+
+/* Container fullscreen: the <video> and caption canvas are absolutely positioned
+   at `inset: 0` inside the stage, so promoting the stage fills the screen with
+   both and the draft captions stay visible.
+
+   Deliberately NOT `position: fixed`. The editor stage lives inside
+   `.editor-preview-device`, which sets `container-type: size` — size containment
+   makes that ancestor the containing block for `position: fixed` descendants, so
+   `inset: 0` / `100vw` / `100vh` were resolved against the small device box
+   instead of the viewport and the fullscreen stage rendered pinned inside that
+   box, leaving the caption canvas invisible. The top layer already sizes the
+   fullscreen element, so `absolute` + `inset: 0` is correct here. */
+.phone-frame__canvas:fullscreen,
+.phone-frame__canvas:-webkit-full-screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  background: #000;
+}
+
+/* Keep the letterboxing behaviour when the container is the fullscreen element. */
+.phone-frame__canvas:fullscreen > .phone-frame__media,
+.phone-frame__canvas:-webkit-full-screen > .phone-frame__media {
+  object-fit: contain;
+  background: #000;
+}
+
+/* The caption canvas must track the promoted stage. It is already `inset: 0`, but
+   reaffirming it here keeps the overlay covering the fullscreen video even if a
+   more specific page rule ever reintroduces an explicit width/height. */
+.phone-frame__canvas:fullscreen > .phone-frame__draft-frame,
+.phone-frame__canvas:-webkit-full-screen > .phone-frame__draft-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: none;
+}
+
+/* Blur the media while its render is in flight so the progress overlay stays
+   legible and the frame reads as a working state. Mirrors the editor preview's
+   `.phone-frame__canvas--busy` treatment. */
+.phone-frame__media--busy {
+  filter: blur(14px) brightness(0.55) saturate(0.85);
+  transition: filter 0.35s ease;
+  pointer-events: none;
+}
+
+.phone-frame__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  background: linear-gradient(150deg, var(--surface-2), #0e1120 70%);
+}
+
+.phone-frame__placeholder span {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.phone-frame__placeholder p { margin: 0; padding: 0 24px; }
+
+.phone-frame__overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  background: rgba(11, 13, 23, 0.7);
+  font-weight: 700;
+}
+
+/* The old `.phone-frame__captions` HTML overlay is gone. It drew a second caption
+   track on top of a video whose captions were already burned in, which is what
+   produced the doubled captions. Draft captions are now drawn by
+   `CaptionOverlay` on a transparent canvas stacked over a video that carries no
+   captions at all — the editor previews the episode's source media, so the
+   canvas is the single caption track. */
+
+/* The draft caption overlay is a <canvas> stacked directly on top of the preview
+   video. It must stay completely transparent — it is only a surface for the
+   caption glyphs — so it deliberately does NOT reuse `.phone-frame__media`,
+   which paints an opaque `background: #000` and would hide the video behind it. */
+.phone-frame__draft-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: transparent;
+  /* No `object-fit`: a canvas has no intrinsic aspect ratio to fit, and the
+     drawing loop already scales its output to this element's box. */
+}
+
+/* --- Clip editor ------------------------------------------------------------ */
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(300px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1000px) {
+  .editor-grid { grid-template-columns: 1fr; }
+}
+
+.editor-aside {
+  position: sticky;
+  top: calc(var(--header-height) + 20px);
+}
+
+/* --- Editor live preview (production) --------------------------------------- */
+
+.editor-preview-card__head { margin-bottom: 4px; }
+
+.editor-preview-card__badge {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Device stage keeps the 9:16 frame fully visible on any screen height using
+   container-relative units, so it shrinks on short viewports instead of
+   overflowing or being cut off. */
+.editor-preview-device {
+  container-type: size;
+  display: grid;
+  place-items: center;
+  height: min(62vh, 560px);
+  min-height: 320px;
+  padding: 12px 0;
+}
+
+.editor-preview-device__frame {
+  height: 100%;
+  width: auto;
+  aspect-ratio: 9 / 16;
+  max-width: 100%;
+}
+
+/* Letterbox the media inside the frame instead of cropping it so the preview
+   matches the render exactly (original geometry, no cover-crop). */
+.editor-preview-card .phone-frame__media {
+  object-fit: contain;
+  background: #000;
+}
+
+.editor-preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.editor-preview-toggle { gap: 6px; font-size: 0.8rem; }
+
+.editor-preview-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 100%;
+}
+
+.editor-preview-hint { font-size: 0.76rem; line-height: 1.45; }
+
+/* --- Save-in-flight progress overlay ---------------------------------------- */
+
+/* Sits over the blurred preview media and reports the Celery job's own progress
+   and stage message while the render runs in the background. */
+.editor-preview-progress {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  background: rgba(8, 10, 18, 0.35);
+  backdrop-filter: blur(2px);
+}
+
+.editor-preview-progress__spinner {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: var(--accent);
+  animation: editor-preview-spin 0.8s linear infinite;
+}
+
+@keyframes editor-preview-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor-preview-progress__spinner { animation-duration: 2.4s; }
+}
+
+.editor-preview-progress__label {
+  display: grid;
+  gap: 4px;
+  max-width: 22ch;
+}
+
+.editor-preview-progress__label strong {
+  font-size: 0.86rem;
+  line-height: 1.3;
+}
+
+.editor-preview-progress__label .dim { font-size: 0.74rem; }
+
+.editor-preview-progress__bar { width: min(100%, 200px); }
+
+/* The temporary Pocket TTS sample is driven by the video's transport controls,
+   so the element itself stays out of the layout. */
+.editor-preview-voice {
+  display: none;
+}
+
+/* --- Voice-clone preview (right sidebar) ------------------------------------ */
+
+.editor-voice-card {
+  border-color: #6366f133;
+}
+
+.editor-voice-audio {
+  width: 100%;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--surface-2, #1a1a22);
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 90px;
+}
+
+/* --- Helpers ---------------------------------------------------------------- */
+
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot--ok { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.status-dot--down { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+/* --- Footer ----------------------------------------------------------------- */
+
+.app-footer {
+  border-top: 1px solid var(--border);
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: auto;
+  position: relative;
+}
+
+/* Faint brand gradient bleeding down from the hairline. */
+.app-footer::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 5%, var(--accent) 50%, transparent 95%);
+  opacity: 0.4;
+}
+
+/* --- Responsive tweaks ------------------------------------------------------ */
+
+@media (max-width: 720px) {
+  .page { padding: 24px 16px 64px; }
+  .app-header { padding: 0 16px; gap: 10px; }
+  .brand__text { display: none; }
+  .user-chip__name { display: none; }
+
+  /* Preview stage takes the viewport height budget on phones too. */
+  .editor-preview-device {
+    height: min(56vh, 480px);
+    min-height: 280px;
+  }
+  .editor-aside {
+    position: static;
+  }
+}
+
+/* Short landscape screens (small laptop heights, split view). */
+@media (max-height: 700px) and (orientation: landscape) {
+  .editor-preview-device {
+    height: min(58vh, 420px);
+    min-height: 240px;
+  }
+}

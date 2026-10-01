@@ -1,0 +1,42 @@
+# --- Python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Virtual environments --------------------------------------------------
+venv/
+.venv/
+env/
+
+# --- Environment / secrets (never commit credentials) ----------------------
+.env
+.env.*
+!backend/.env.example
+
+# --- Local data that must not enter version control ------------------------
+media_storage/
+backend/media_storage/
+# Hugging Face model cache can be several GB — download locally, never commit.
+models/
+backend/models/hub/
+model_cache/
+backend/model_cache/
+*.log
+
+# --- Node / frontend -------------------------------------------------------
+node_modules/
+frontend/dist/
+frontend/coverage/
+
+# --- Editors / OS ----------------------------------------------------------
+.vscode/*
+!.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,31 @@
+# --- Python -----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.Python
+
+# --- Environment ------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# --- Local runtime data -----------------------------------------------------
+media_storage/
+models/
+*.log
+celerybeat-schedule*
+
+# --- Tests / tooling --------------------------------------------------------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Editors / OS -----------------------------------------------------------
+.idea/
+.vscode/
+.DS_Store

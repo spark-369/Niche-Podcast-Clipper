@@ -1,0 +1,27 @@
+# Keep the Docker build context small: the HF model cache, local media and
+# developer tooling must never be baked into (or sent to) the image build.
+.git
+.gitignore
+.dockerignore
+docker-compose.yml
+README.md
+LICENSE
+
+# Python
+**/__pycache__
+**/*.py[cod]
+backend/venv
+backend/.venv
+venv
+.venv
+**/.pytest_cache
+**/.mypy_cache
+
+# Secrets
+backend/.env
+.env
+
+# Local data (mounted as volumes at runtime instead)
+backend/media_storage
+backend/models
+backend/model_cache
